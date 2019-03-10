@@ -1,6 +1,6 @@
 {
     "name": "sass",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Example project showing how to use Sass middleware",
     "main": "server.js",
     "scripts": {

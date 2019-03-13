@@ -1,32 +1,61 @@
-class Utils {
-  static calcDotValue = diameter => 11 - diameter * 0.1
+const Utils = (() => {
+  removeEl = el => el.parentNode.removeChild(el) // move this method to Game class
 
-  static getRandomNum = (min, max) =>
-    Math.floor(Math.random() * (max - min)) + min
-
-  static getRandomNum10 = (min, max) =>
-    Math.round((Math.random() * (max - min) + min) / 10) * 10
-
-  static removeEl = el => el.parentNode.removeChild(el)
-  
-  static updateToggleButton = (button, label, classToAdd, classToRemove) => {
+  updateToggleButton = (button, label, classToAdd, classToRemove) => {
     button.innerHTML = label
     button.classList.add(classToAdd)
     button.classList.remove(classToRemove)
   }
-}
+  return Object.freeze({
+    removeEl,
+    updateToggleButton
+  })
+})()
 
-class Gradient {
-  static GRADIENT_TYPE = 'radial-gradient'
-  static GRADIENTS = [
+class Dot {
+  MIN_SIZE = 10
+  MAX_SIZE = 100
+  GRADIENT_TYPE = 'radial-gradient'
+  GRADIENTS = [
     '(#f26080, #ed2f59, #f2073b)', // red
     '(#95bcf9, #4b89ed, #0960ed)', // blue
     '(#68e863, #3aa536, #047201)', // green
     '(#d387ed, #9e3dbf, #680e87)', // violet
     '(#f9e086, #f4c829, #f9c300)', // yellow
   ]
-  static getRandomGradient = () => {
-    return this.GRADIENT_TYPE + this.GRADIENTS[Math.floor(Math.random() * this.GRADIENTS.length)]
+  constructor(getSpeed) {
+   const maxWidth = window.innerWidth - this.MAX_SIZE
+    const dotSize = this.getRandomDotSize()
+    const dotValue = this.getDotValue(dotSize)
+    const dotLeftPosition = this.getRandomNum(0, maxWidth)
+    const topPosition = 0 - dotSize - getSpeed()
+    this.dot = document.createElement('div')
+
+    this.dot.setAttribute('class', 'dot')
+    this.dot.setAttribute('data-size', dotSize)
+    this.dot.setAttribute('data-value', dotValue)
+    this.dot.style.width = `${dotSize}px`
+    this.dot.style.height = `${dotSize}px`
+    this.dot.style.top = topPosition + 'px'
+    this.dot.style.left = dotLeftPosition + 'px'
+    this.dot.style['background-image'] = this.getRandomGradient()
+  }
+  getDotValue = diameter => 11 - diameter * 0.1
+
+  getRandomDotSize = () =>
+    Math.round((Math.random() * (this.MAX_SIZE - this.MIN_SIZE) + this.MIN_SIZE) / 10) * 10
+
+  getRandomNum = (min, max) => Math.floor(Math.random() * (max - min)) + min
+
+  getRandomGradient = () => {
+    return (
+      this.GRADIENT_TYPE +
+      this.GRADIENTS[Math.floor(Math.random() * this.GRADIENTS.length)]
+    )
+  }
+
+  createDot() {
+    return this.dot
   }
 }
 
@@ -79,28 +108,12 @@ class Game {
     this.animateDots()
   }
   addDot = () => {
-    // const {colors} = this.state
-    const playground = document.getElementById('playground')
-    const maxWidth = window.innerWidth - 100
-    const dotSize = Utils.getRandomNum10(10, 100)
-    const dotValue = Utils.calcDotValue(dotSize)
-    const dotLeftPosition = Utils.getRandomNum(0, maxWidth)
-    const span = document.createElement('span')
-    const topPosition = 0 - dotSize - this.getSpeed()
+    const dot = new Dot(this.getSpeed).createDot()
+    dot.addEventListener('click', this.dotOnClick)
+    playground.appendChild(dot)
 
-    span.setAttribute('class', 'dot')
-    span.setAttribute('data-size', dotSize)
-    span.setAttribute('data-value', dotValue)
-    span.style.width = dotSize + 'px'
-    span.style.height = dotSize + 'px'
-    span.style.top = topPosition + 'px'
-    span.style.left = dotLeftPosition + 'px'
-    span.style['background-image'] = Gradient.getRandomGradient()
-      
-    span.addEventListener('click', this.dotClicked)
-    playground.appendChild(span)
   }
-  dotClicked = event => {
+  dotOnClick = event => {
     const {target} = event
     const {isRunning} = this.state
     const dotValue = parseInt(target.getAttribute('data-value'), 10)

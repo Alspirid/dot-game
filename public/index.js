@@ -1,13 +1,10 @@
 const Utils = (() => {
-  removeEl = el => el.parentNode.removeChild(el) // move this method to Game class
-
   updateToggleButton = (button, label, classToAdd, classToRemove) => {
     button.innerHTML = label
     button.classList.add(classToAdd)
     button.classList.remove(classToRemove)
   }
   return Object.freeze({
-    removeEl,
     updateToggleButton
   })
 })()
@@ -63,7 +60,7 @@ class Game {
   state = {
     score: 0,
     isRunning: false,
-    interval: 0,
+    intervalId: 0,
     timer: 1000,
     scoreDiv: document.getElementById('score'),
     gameBtn: document.getElementById('game-btn'),
@@ -75,7 +72,7 @@ class Game {
     this.state = {...this.state, ...obj}
   }
 
-  init = () => {
+  constructor() {
     let {startingScore, gameBtn, speedDiv} = this.state
     this.setScore(0)
     this.setSpeed()
@@ -90,16 +87,16 @@ class Game {
     speedLabel.innerHTML = `Speed: ${this.getSpeed()}`
   }
   togglePlay = () => {
-    let {gameBtn, isRunning, timer, interval} = this.state
+    let {gameBtn, isRunning, timer, intervalId} = this.state
     if (isRunning) {
       Utils.updateToggleButton(gameBtn, 'Start', 'start', 'pause')
       this.setState({isRunning: false})
-      clearInterval(interval)
+      clearInterval(intervalId)
     } else {
       Utils.updateToggleButton(gameBtn, 'Pause', 'pause', 'start')
       this.setState({
         isRunning: true,
-        interval: setInterval(this.play, timer),
+        intervalId: setInterval(this.play, timer),
       })
     }
   }
@@ -113,6 +110,8 @@ class Game {
     playground.appendChild(dot)
 
   }
+  deleteDot = dot => dot.parentNode.removeChild(dot)
+
   dotOnClick = event => {
     const {target} = event
     const {isRunning} = this.state
@@ -121,7 +120,7 @@ class Game {
     if (isRunning) {
       setTimeout(() => {
         this.setScore(dotValue)
-        Utils.removeEl(target)
+        this.deleteDot(target)
       }, 0)
     }
   }
@@ -132,22 +131,14 @@ class Game {
     scoreDiv.innerHTML = `Your Score: ${updatedScore}`
   }
   animateDots = () => {
-    const dots = document.querySelectorAll('.dot')
     const playgroundHeight = document.getElementById('playground').offsetHeight
-    const speed = this.getSpeed()
-
-    for (let i = 0; i < dots.length; i++) {
-      let positionY = parseInt(dots[i].style.top, 10),
-        velocity = (positionY += speed)
-      if (positionY > playgroundHeight) {
-        Utils.removeEl(dots[i])
-      }
-      dots[i].style.top = velocity + 'px'
-    }
+    document.querySelectorAll('.dot').forEach(dot => {
+      const positionY = parseInt(dot.style.top, 10),
+      shift = positionY + this.getSpeed()
+      if (positionY > playgroundHeight) this.deleteDot(dot)
+      dot.style.top = `${shift}px`
+    })
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const dotGame = new Game()
-  dotGame.init()
-})
+document.addEventListener('DOMContentLoaded', () => new Game())

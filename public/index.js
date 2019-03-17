@@ -54,7 +54,6 @@ class Game {
     intervalId: null,
     intervalOfMoving: null,
     refreshRate: 1000,
-    movingRefreshRate: 1000,
     scoreElement: document.getElementById('score'),
     gameBtn: document.getElementById('game-btn'),
     speedElement: document.getElementById('speed'),
@@ -62,9 +61,7 @@ class Game {
   }
 
   setState = obj => {
-    setTimeout(() => {
-      this.state = {...this.state, ...obj}
-    }, 0)
+    this.state = {...this.state, ...obj}
   }
 
   constructor() {
@@ -72,17 +69,30 @@ class Game {
     this.setScore(0)
     this.setSpeed()
     gameBtn.addEventListener('click', this.togglePlay)
-    speedElement.addEventListener('change', this.setSpeed)
+    speedElement.addEventListener('change', () => {
+      const {intervalOfMoving} = this.state
+      this.setSpeed()
+      clearInterval(intervalOfMoving)
+      if (this.state.isRunning) {
+        const interval = setInterval(
+          this.animateDots,
+          this.getMovingRefreshRate(),
+        )
+        this.setState({intervalOfMoving: interval})
+      }
+    })
   }
+
+  getMovingRefreshRate = () =>
+    Math.floor(this.state.refreshRate / this.getSpeed())
 
   getSpeed = () => parseInt(this.state.speedElement.value, 10)
 
   setSpeed = () => {
     const {speedLabel} = this.state
     speedLabel.innerHTML = `Speed: ${this.getSpeed()}`
-    this.setState({movingRefreshRate: 1000 / this.getSpeed()})
-    console.log(this.state)
   }
+
   togglePlay = () => {
     let {
       gameBtn,
@@ -102,7 +112,10 @@ class Game {
       this.setState({
         isRunning: true,
         intervalId: setInterval(this.addDot, refreshRate),
-        intervalOfMoving: setInterval(this.animateDots, movingRefreshRate),
+        intervalOfMoving: setInterval(
+          this.animateDots,
+          this.getMovingRefreshRate(),
+        ),
       })
     }
   }

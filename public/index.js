@@ -1,13 +1,3 @@
-const Utils = (() => {
-  updateToggleButton = (button, label, classToAdd, classToRemove) => {
-    button.innerHTML = label
-    button.classList.add(classToAdd)
-    button.classList.remove(classToRemove)
-  }
-  return Object.freeze({
-    updateToggleButton
-  })
-})()
 
 class Dot {
   MIN_SIZE = 10
@@ -62,9 +52,9 @@ class Game {
     isRunning: false,
     intervalId: 0,
     timer: 1000,
-    scoreDiv: document.getElementById('score'),
+    scoreElement: document.getElementById('score'),
     gameBtn: document.getElementById('game-btn'),
-    speedDiv: document.getElementById('speed'),
+    speedElement: document.getElementById('speed'),
     speedLabel: document.getElementById('speed-label'),
   }
 
@@ -73,14 +63,14 @@ class Game {
   }
 
   constructor() {
-    let {startingScore, gameBtn, speedDiv} = this.state
+    let {startingScore, gameBtn, speedElement} = this.state
     this.setScore(0)
     this.setSpeed()
     gameBtn.addEventListener('click', this.togglePlay)
-    speedDiv.addEventListener('change', this.setSpeed)
+    speedElement.addEventListener('change', this.setSpeed)
   }
 
-  getSpeed = () => parseInt(this.state.speedDiv.value, 10)
+  getSpeed = () => parseInt(this.state.speedElement.value, 10)
 
   setSpeed = () => {
     const {speedLabel} = this.state
@@ -89,11 +79,11 @@ class Game {
   togglePlay = () => {
     let {gameBtn, isRunning, timer, intervalId} = this.state
     if (isRunning) {
-      Utils.updateToggleButton(gameBtn, 'Start', 'start', 'pause')
+      this.updateToggleButton(gameBtn, 'Start', 'start', 'pause')
       this.setState({isRunning: false})
       clearInterval(intervalId)
     } else {
-      Utils.updateToggleButton(gameBtn, 'Pause', 'pause', 'start')
+      this.updateToggleButton(gameBtn, 'Pause', 'pause', 'start')
       this.setState({
         isRunning: true,
         intervalId: setInterval(this.play, timer),
@@ -125,10 +115,10 @@ class Game {
     }
   }
   setScore = value => {
-    let {score, scoreDiv} = this.state
+    let {score, scoreElement} = this.state
     const updatedScore = score + value
     this.setState({score: updatedScore})
-    scoreDiv.innerHTML = `Your Score: ${updatedScore}`
+    scoreElement.innerHTML = `Your Score: ${updatedScore}`
   }
   animateDots = () => {
     const playgroundHeight = document.getElementById('playground').offsetHeight
@@ -138,6 +128,11 @@ class Game {
       if (positionY > playgroundHeight) this.deleteDot(dot)
       dot.style.top = `${shift}px`
     })
+  }
+  updateToggleButton = (button, label, classToAdd, classToRemove) => {
+    button.innerHTML = label
+    button.classList.add(classToAdd)
+    button.classList.remove(classToRemove)
   }
 }
 

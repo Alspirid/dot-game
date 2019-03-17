@@ -1,4 +1,3 @@
-
 class Dot {
   MIN_SIZE = 10
   MAX_SIZE = 100
@@ -11,7 +10,7 @@ class Dot {
     '(#f9e086, #f4c829, #f9c300)', // yellow
   ]
   constructor(getSpeed) {
-   const maxWidth = window.innerWidth - this.MAX_SIZE
+    const maxWidth = window.innerWidth - this.MAX_SIZE
     const dotSize = this.getRandomDotSize()
     const dotValue = this.getDotValue(dotSize)
     const dotLeftPosition = this.getRandomNum(0, maxWidth)
@@ -30,7 +29,9 @@ class Dot {
   getDotValue = diameter => 11 - diameter * 0.1
 
   getRandomDotSize = () =>
-    Math.round((Math.random() * (this.MAX_SIZE - this.MIN_SIZE) + this.MIN_SIZE) / 10) * 10
+    Math.round(
+      (Math.random() * (this.MAX_SIZE - this.MIN_SIZE) + this.MIN_SIZE) / 10,
+    ) * 10
 
   getRandomNum = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
@@ -50,8 +51,10 @@ class Game {
   state = {
     score: 0,
     isRunning: false,
-    intervalId: 0,
-    timer: 1000,
+    intervalId: null,
+    intervalOfMoving: null,
+    refreshRate: 1000,
+    movingRefreshRate: 1000,
     scoreElement: document.getElementById('score'),
     gameBtn: document.getElementById('game-btn'),
     speedElement: document.getElementById('speed'),
@@ -59,7 +62,9 @@ class Game {
   }
 
   setState = obj => {
-    this.state = {...this.state, ...obj}
+    setTimeout(() => {
+      this.state = {...this.state, ...obj}
+    }, 0)
   }
 
   constructor() {
@@ -75,30 +80,37 @@ class Game {
   setSpeed = () => {
     const {speedLabel} = this.state
     speedLabel.innerHTML = `Speed: ${this.getSpeed()}`
+    this.setState({movingRefreshRate: 1000 / this.getSpeed()})
+    console.log(this.state)
   }
   togglePlay = () => {
-    let {gameBtn, isRunning, timer, intervalId} = this.state
+    let {
+      gameBtn,
+      isRunning,
+      refreshRate,
+      movingRefreshRate,
+      intervalId,
+      intervalOfMoving,
+    } = this.state
     if (isRunning) {
       this.updateToggleButton(gameBtn, 'Start', 'start', 'pause')
       this.setState({isRunning: false})
       clearInterval(intervalId)
+      clearInterval(intervalOfMoving)
     } else {
       this.updateToggleButton(gameBtn, 'Pause', 'pause', 'start')
       this.setState({
         isRunning: true,
-        intervalId: setInterval(this.play, timer),
+        intervalId: setInterval(this.addDot, refreshRate),
+        intervalOfMoving: setInterval(this.animateDots, movingRefreshRate),
       })
     }
   }
-  play = () => {
-    this.addDot()
-    this.animateDots()
-  }
+
   addDot = () => {
     const dot = new Dot(this.getSpeed).createDot()
     dot.addEventListener('click', this.dotOnClick)
     playground.appendChild(dot)
-
   }
   deleteDot = dot => dot.parentNode.removeChild(dot)
 
@@ -124,7 +136,7 @@ class Game {
     const playgroundHeight = document.getElementById('playground').offsetHeight
     document.querySelectorAll('.dot').forEach(dot => {
       const positionY = parseInt(dot.style.top, 10),
-      shift = positionY + this.getSpeed()
+        shift = positionY + 1 //this.getSpeed()
       if (positionY > playgroundHeight) this.deleteDot(dot)
       dot.style.top = `${shift}px`
     })

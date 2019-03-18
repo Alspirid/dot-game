@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Dot Game</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
-<body>
-  <div id="dot-app">
-    <div id="controls">
-      <div id="score"></div>
-      <div id="game-btn" class="start">Start</div>
-      <div id="slider">
-        <input id="speed" type="range" min="10" max="100" value="1" />
-        <div id="speed-label"></div>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Limelight"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="dot-app">
+      <div id="controls">
+        <div class="wrapper-score-button">
+          <div id="score"></div>
+          <button id="game-btn" class="start">Start</button>
+        </div>
+        <div id="slider">
+          <input id="speed" type="range" min="10" max="100" value="1" />
+          <div id="speed-label"></div>
+        </div>
       </div>
+      <div id="playground"></div>
     </div>
-    <div id="playground"></div>
-  </div>
-  <script src="/index.js"></script>
-</body>
+    <script src="/index.js"></script>
+  </body>
 </html>

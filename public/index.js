@@ -58,6 +58,7 @@ class Game {
     gameBtn: document.getElementById('game-btn'),
     speedElement: document.getElementById('speed'),
     speedLabel: document.getElementById('speed-label'),
+    controlElement: document.getElementById('controls'),
   }
 
   setState = obj => {
@@ -101,14 +102,17 @@ class Game {
       movingRefreshRate,
       intervalId,
       intervalOfMoving,
+      controlElement,
     } = this.state
     if (isRunning) {
       this.updateToggleButton(gameBtn, 'Start', 'start', 'pause')
+      controlElement.classList.add('paused')
       this.setState({isRunning: false})
       clearInterval(intervalId)
       clearInterval(intervalOfMoving)
     } else {
       this.updateToggleButton(gameBtn, 'Pause', 'pause', 'start')
+      controlElement.classList.remove('paused')
       this.setState({
         isRunning: true,
         intervalId: setInterval(this.addDot, refreshRate),
@@ -143,13 +147,13 @@ class Game {
     let {score, scoreElement} = this.state
     const updatedScore = score + value
     this.setState({score: updatedScore})
-    scoreElement.innerHTML = `Your Score: ${updatedScore}`
+    scoreElement.innerHTML = `Score: ${updatedScore}`
   }
   animateDots = () => {
     const playgroundHeight = document.getElementById('playground').offsetHeight
     document.querySelectorAll('.dot').forEach(dot => {
       const positionY = parseInt(dot.style.top, 10),
-        shift = positionY + 1 //this.getSpeed()
+        shift = positionY + 1
       if (positionY > playgroundHeight) this.deleteDot(dot)
       dot.style.top = `${shift}px`
     })

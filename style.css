@@ -1,0 +1,119 @@
+body {
+  background-color: #fff;
+  font-family: "Limelight", cursive;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper-score-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#dot-app {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+#dot-app #controls {
+  background-image: linear-gradient(45deg, #0252d1, #00235b);
+  color: #fff;
+  opacity: 0.9;
+  overflow: hidden;
+  padding: 20px 20px 0 20px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+#dot-app #controls #score {
+  font-family: "Limelight", cursive;
+  font-size: 1.7rem;
+  text-align: center;
+  flex: 1;
+}
+#dot-app #controls #game-btn {
+  outline: 0;
+  transition: all 0.5s ease;
+  border: 3px solid #eee;
+  width: 20%;
+  padding: 20px 16px;
+  background-image: linear-gradient(180deg, #f9e086, #f9c300);
+  border-radius: 8px;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  color: #0252d1;
+  font-weight: 800;
+  letter-spacing: 8px;
+  font-family: "Limelight", cursive;
+  min-width: 280px;
+}
+#dot-app #controls #game-btn:hover {
+  cursor: pointer;
+}
+#dot-app #controls #game-btn.start {
+  background-image: linear-gradient(45deg, #f26080, #f2073b);
+}
+#dot-app #controls #game-btn.start:hover {
+  color: black;
+}
+#dot-app #controls #game-btn.pause {
+  background-image: linear-gradient(45deg, #f9e086, #d3a500);
+}
+#dot-app #controls #game-btn.pause:hover {
+  color: black;
+}
+#dot-app #controls #slider {
+  width: calc(100% - 20px);
+  font-family: "Limelight", cursive;
+  font-size: 1.4rem;
+  padding: 10px;
+}
+#dot-app #controls #slider input {
+  width: 100%;
+  font-size: 14px;
+}
+#dot-app #playground {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  float: left;
+}
+#dot-app #playground .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: block;
+  opacity: 0.6;
+  position: absolute;
+  transition: opacity 0.5s ease;
+}
+#dot-app #playground .dot:hover {
+  opacity: 1;
+  z-index: 1;
+}
+
+.paused {
+  background-image: linear-gradient(358deg, #ffffff, #f2073b) !important;
+  background-size: 400% 400%;
+  animation: blinking 2s ease infinite;
+}
+
+@keyframes blinking {
+  0% {
+    background-position: 51% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 51% 0%;
+  }
+}

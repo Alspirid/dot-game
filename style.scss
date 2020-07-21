@@ -1,6 +1,6 @@
 body {
   background-color: #fff;
-  font-family: 'Limelight', cursive;
+  font-family: "Limelight", cursive;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -31,7 +31,7 @@ body {
     flex-direction: column;
     flex-shrink: 0;
     #score {
-      font-family: 'Limelight', cursive;
+      font-family: "Limelight", cursive;
       font-size: 1.7rem;
       text-align: center;
       flex: 1;
@@ -49,7 +49,7 @@ body {
       color: #0252d1;
       font-weight: 800;
       letter-spacing: 8px;
-      font-family: 'Limelight', cursive;
+      font-family: "Limelight", cursive;
       min-width: 280px;
       &:hover {
         cursor: pointer;
@@ -69,7 +69,7 @@ body {
     }
     #slider {
       width: calc(100% - 20px);
-      font-family: 'Limelight', cursive;
+      font-family: "Limelight", cursive;
       font-size: 1.4rem;
       padding: 10px;
       input {
